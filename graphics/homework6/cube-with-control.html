@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+    attribute vec4 vPosition;
+    attribute vec4 vColor;
+    attribute vec2 vTexCoord;
+    
+    uniform mat4 modelViewMatrix;
+    uniform mat4 projectionMatrix;
+    
+    varying vec4 fColor;
+    varying vec2 fTexCoord;
+
+void main()
+{
+    gl_Position = projectionMatrix*modelViewMatrix*vPosition;
+    fColor = vColor;
+    fTexCoord = vTexCoord;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+
+varying vec4 fColor;
+varying vec2 fTexCoord;
+
+uniform sampler2D texture;
+
+void
+main()
+{
+    gl_FragColor = texture2D( texture, fTexCoord );
+}
+</script>
+
+<script type="text/javascript" src="../common/webgl-utils.js"></script>
+<script type="text/javascript" src="../common/initShaders.js"></script>
+<script type="text/javascript" src="../common/MV.js"></script>
+<script type="text/javascript" src="cube-with-control.js"></script>
+
+<body>
+<canvas id="gl-canvas" width="512" height="512">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+
+<div>
+  <p>
+  <button id = "thetaup">Increase theta</button>
+  <button id = "thetadown">Decrease theta</button>
+  <button id = "phiup">Increase phi</button>
+  <button id = "phidown">Decrease phi</button>
+  <p> </p>
+  ------------------------------
+  <p></p>
+  Hold and move LMB to rotate<p> </p>
+  Hold and move RMB to pan<p> </p>
+  Scroll wheel to zoom<p> </p>
+</div>
+    <p> </p>
+    ------------------------------
+    <p></p>
+    Enter eye location: (Use this to study specific eye locations)
+<div>
+    <FORM name="parameterForm">
+    X: <input type=text name="xValue" value=2>
+    Y: <input type=text name="yValue" value=2>
+    Z: <input type=text name="zValue" value=2>
+    <INPUT TYPE="BUTTON" id="eyeValue" VALUE="Submit">
+    </Form>
+</div>
+
+</body>
+</html>

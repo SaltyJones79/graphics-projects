@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <style type="text/css">
+    canvas {
+      background: blue;
+    }
+  </style>
+
+  <script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec4 vPosition;
+    attribute vec4 vColor;
+    attribute vec2 vTexCoord;
+    attribute float aTexIndex;
+
+    uniform mat4 modelViewMatrix;
+    uniform mat4 projectionMatrix;
+
+    varying vec4 fColor;
+    varying vec2 fTexCoord;
+    varying float vTexIndex;
+
+    void main() {
+        gl_Position = projectionMatrix * modelViewMatrix * vPosition;
+        fColor = vColor;
+        fTexCoord = vTexCoord;
+        vTexIndex = aTexIndex;
+    }
+  </script>
+
+  <script id="fragment-shader" type="x-shader/x-fragment">
+
+    precision mediump float;
+
+    varying vec4 fColor;
+    varying vec2 fTexCoord;
+    varying float vTexIndex;
+    uniform sampler2D texture0;
+    uniform sampler2D texture1;
+    uniform sampler2D texture2;
+    uniform sampler2D texture3;
+
+    void main() {
+        if (vTexIndex < 0.5) {
+            gl_FragColor = texture2D(texture0, fTexCoord);
+        } else if (vTexIndex < 1.5) {
+            gl_FragColor = texture2D(texture1, fTexCoord);
+        } else if (vTexIndex < 2.5) {
+            gl_FragColor = texture2D(texture2, fTexCoord);
+        } else {
+            gl_FragColor = texture2D(texture3, fTexCoord);
+        }
+    }
+  </script>
+
+  <script type="text/javascript" src="../common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../common/initShaders.js"></script>
+  <script type="text/javascript" src="../common/MV.js"></script>
+  <script type="text/javascript" src="tetra.js"></script>
+
+  <body>
+    <canvas id="gl-canvas" width="512" height="512">
+      Oops ... your browser doesn't support the HTML5 canvas element
+    </canvas>
+
+    <div>
+      <p>
+        <button id="thetaup">Increase theta</button>
+        <button id="thetadown">Decrease theta</button>
+        <button id="phiup">Increase phi</button>
+        <button id="phidown">Decrease phi</button>
+      </p>
+
+      <p></p>
+      ------------------------------
+      <p></p>
+      Hold and move LMB to rotate
+      <p></p>
+      Hold and move RMB to pan
+      <p></p>
+      Scroll wheel to zoom
+      <p></p>
+    </div>
+    <p></p>
+    ------------------------------
+    <p></p>
+    Enter eye location: (Use this to study specific eye locations)
+    <div>
+      <form name="parameterForm">
+        X: <input type="text" name="xValue" value="2" /> Y:
+        <input type="text" name="yValue" value="2" /> Z:
+        <input type="text" name="zValue" value="2" />
+        <input type="BUTTON" id="eyeValue" value="Submit" />
+      </form>
+    </div>
+  </body>
+</html>

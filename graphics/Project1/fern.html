@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <title>project1</title>
+
+  <script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec4 vPosition;
+    uniform float pointSize; // Uniform for point size
+
+    void main() {
+        gl_Position = vPosition;
+        gl_PointSize = pointSize; // Set the point size
+    }
+  </script>
+
+  <script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+    uniform int colorIndex;
+    void main() {
+        if (colorIndex == 0)
+            gl_FragColor = vec4( 0.0, 0.35, 0.1, 1.0 );
+        else
+            gl_FragColor = vec4( 0.0, 0.75, 0.0, 1.0 );
+    }
+  </script>
+
+  <script type="text/javascript" src="../Common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../Common/initShaders.js"></script>
+  <script type="text/javascript" src="../Common/MV.js"></script>
+  <script type="text/javascript" src="fern.js"></script>
+  <script src = fern.css></script>
+</head>
+
+<body>
+  <h1>Look at this fern</h1>
+  <div>
+    <canvas id="gl-canvas" width="512" height="512">
+    Oops ... your browser doesn't support the HTML5 canvas element
+  </canvas>
+  <script type="text/javascript">
+    window.onload = main;
+    </script>
+    </div>
+</body>
+</html>

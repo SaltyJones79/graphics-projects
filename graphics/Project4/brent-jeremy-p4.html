@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
+attribute  vec4 vPosition;
+attribute  vec3 vNormal;
+attribute  vec4 vColor;
+attribute  vec2 vTexCoord;  //
+
+uniform vec4 ambientProduct, diffuseProduct, specularProduct;
+uniform vec4  lightPosition;
+uniform float shininess;
+varying vec4  fColor;
+varying vec4  fLighting;    //
+varying vec2  fTexCoord;    //
+
+void main()
+{
+    vec3 pos    = (-viewMatrix * modelMatrix * vPosition).xyz;
+    vec3 light  = lightPosition.xyz;
+    vec3 light2 = (-viewMatrix * modelMatrix * lightPosition).xyz;
+    vec3 L      = normalize(light - pos);
+
+    vec3 E      = normalize(-pos);
+    vec3 H      = normalize(L + E);
+    vec4 NN     = vec4(vNormal, 0);
+    vec3 N      = normalize((viewMatrix * modelMatrix * NN).xyz);
+
+    float dotcheck = dot(L, N);
+
+    float Kd = max(dotcheck, 0.0);
+    float Ks = pow(max(dot(N, H), 0.00), shininess);
+    
+    vec4 ambient    = ambientProduct;
+    vec4 diffuse    = Kd * diffuseProduct;
+    vec4 specular   = Ks * specularProduct;
+
+    if (dotcheck < 0.0) {
+        specular = vec4(0.0, 0.0, 0.0, 0.0);
+    }
+
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vPosition;
+    fLighting = ambient + diffuse + specular;
+    fColor = vColor + fLighting;
+    fColor.a = 1.0;
+
+    fTexCoord = vTexCoord;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+
+uniform int boolUseTex;    //
+uniform sampler2D texture;  //
+varying vec4 fColor;
+varying vec4 fLighting;
+varying vec2 fTexCoord;
+
+void
+main()
+{
+    if (boolUseTex == 1) {
+        gl_FragColor = texture2D(texture, fTexCoord) + fLighting;
+    } else {
+        gl_FragColor = fColor;
+    }
+}
+</script>
+
+<script type="text/javascript" src="../common/webgl-utils.js"></script>
+<script type="text/javascript" src="../common/initShaders.js"></script>
+<script type="text/javascript" src="../common/MV.js"></script>
+<script type="text/javascript" src="brent-jeremy-p4.js"></script>
+
+<body>
+<canvas id="gl-canvas" width="512" height="512">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+
+<div>
+  <p>
+  <button id = "thetaup">Increase theta</button>
+  <button id = "thetadown">Decrease theta</button>
+  <button id = "phiup">Increase phi</button>
+  <button id = "phidown">Decrease phi</button>
+  <p> </p>
+  ------------------------------
+  <p></p>
+  Hold and move LMB to rotate<p> </p>
+  Hold and move RMB to pan<p> </p>
+  Scroll wheel to zoom<p> </p>
+</div>
+    <p> </p>
+    ------------------------------
+    <p></p>
+    Enter eye location: (Use this to study specific eye locations)
+<div>
+    <FORM name="parameterForm">
+    X: <input type=text name="xValue" value=2>
+    Y: <input type=text name="yValue" value=2>
+    Z: <input type=text name="zValue" value=2>
+    <INPUT TYPE="BUTTON" id="eyeValue" VALUE="Submit">
+    </Form>
+</div>
+
+</body>
+</html>
